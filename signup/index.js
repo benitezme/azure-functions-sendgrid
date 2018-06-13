@@ -7,7 +7,7 @@ module.exports = function(context, req) {
 
         var API_KEY = process.env.SG_APIKEY;
 
-        axios({
+        var subscribe = axios({
             method: 'post',
             url: 'https://api.sendgrid.com/v3/contactdb/recipients',
             data: [{"email":req.body.email}],
@@ -33,6 +33,8 @@ module.exports = function(context, req) {
             };
             return error;
         });
+
+        return subscribe;
     }
     else {
         context.res.toString();
