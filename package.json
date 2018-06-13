@@ -1,0 +1,30 @@
+{
+  "name": "azure-functions-sendgrid",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "signup": "browserify ./signup/function.js -o ./signup/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bearcanrun/azure-functions-sendgrid.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bearcanrun/azure-functions-sendgrid/issues"
+  },
+  "homepage": "https://github.com/bearcanrun/azure-functions-sendgrid#readme",
+  "dependencies": {
+    "xhr": "^2.5.0"
+  },
+  "peerDependencies": {
+    "browserify": "^16.2.2"
+  },
+  "browser": {
+    "request": "xhr"
+  }
+}
