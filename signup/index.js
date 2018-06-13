@@ -19,44 +19,52 @@ module.exports = function(context, req) {
         .then(function (response) {
             var recipients = response.data.persisted_recipients;
 
-            axios({
-                method: 'post',
-                url: 'https://api.sendgrid.com/v3/contactdb/lists/4068018/recipients/' + recipients[0],
-                headers:{
-                    'content-type': 'application/json',
-                    'authorization': 'Bearer ' + API_KEY
-                }
-            })
-            .then(function (response) {
-                context.res = {
-                    // status defaults to 200 */
-                    body: "Success: Added " + req.body.email + ' - ' + recipients[0] + 'to General List'
-                };
-            })
-            .catch(function (error) {
-                error.errors.toString();
-                context.res = {
-                    status: 400,
-                    body: "Error: " + error.errors
-                };
-                return error;
-            });
-        
-            return recipients[0];
+            if (recipients.length > 0 ){
+                var addToList = axios({
+                    method: 'post',
+                    url: 'https://api.sendgrid.com/v3/contactdb/lists/4068018/recipients/' + recipients[0],
+                    headers:{
+                        'content-type': 'application/json',
+                        'authorization': 'Bearer ' + API_KEY
+                    }
+                })
+                .then(function (response) {
+
+                    if (response.status >= 200 && response.status < 300) {
+                        return {"email": req.body.email,"recipientId": recipients[0]};
+                    } else {
+                        throw response.data.errors[0].message;
+                    }
+                })
+                .catch(function (error) {
+                    context.res = {
+                        status: 400,
+                        body: "Add to List Error: " + error
+                    };
+                    return error;
+                });
+                return addToList;
+            } else{
+                throw response.data.errors[0].message
+            }
+            
+        })
+        .then(function (response) {
+            context.res = {
+                body: "Success: Added " + response.email + ' to General List \n'
+            };
+            return;
         })
         .catch(function (error) {
-            error.errors.toString();
             context.res = {
                 status: 400,
-                body: "Error: " + error.errors
+                body: "Add Contact Error: " + error
             };
             return error;
         });
-
         return subscribe;
     }
     else {
-        context.res.toString();
         context.res = {
             status: 400,
             body: "Please pass an email address in the request body" + context.res
