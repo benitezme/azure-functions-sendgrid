@@ -70,6 +70,7 @@ module.exports = function(context, req) {
             body: "Please pass an email address in the request body" + context.res
         };
     }
+    JSON.parse(JSON.stringify(context.res));
     context.done();
 };
 
