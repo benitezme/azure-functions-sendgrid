@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "signup": "browserify ./signup/function.js -o ./signup/index.js",
+    "signup": "parcel build ./signup/function.js -d ./signup -o index.js -t node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,7 +22,7 @@
     "axios": "^0.18.0"
   },
   "peerDependencies": {
-    "browserify": "^16.2.2"
+    "parcel-bundler": "^1.8.1"
   },
   "browser": {
     "request": "xhr"
