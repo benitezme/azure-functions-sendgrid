@@ -7,22 +7,20 @@ module.exports = function(context, req) {
 
         var API_KEY = process.env.SG_APIKEY;
 
-        axios.post({
+        axios({
             method: 'post',
             url: 'https://api.sendgrid.com/v3/contactdb/recipients',
-            data: {
-                email: req.body.email
-            },
+            data: [{"email":req.body.email}],
             headers:{
                 'content-type': 'application/json',
-                'authorization': 'Bearer' + API_KEY
+                'authorization': 'Bearer ' + API_KEY
             }
         })
         .then(function (response) {
-            response.persisted_recipients.toString();
+            var recipients = response.data.persisted_recipients;
             context.res = {
                 // status defaults to 200 */
-                body: "Success: Added " + req.body.email + response.persisted_recipients
+                body: "Success: Added " + req.body.email + ' - ' + recipients[0]
             };
 
             return context.res;
