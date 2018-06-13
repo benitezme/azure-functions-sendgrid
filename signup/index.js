@@ -1,4 +1,49 @@
-parcelRequire=function(e,r,n,t){function i(n,t){function o(e){return i(o.resolve(e))}function c(r){return e[n][1][r]||r}if(!r[n]){if(!e[n]){var l="function"==typeof parcelRequire&&parcelRequire;if(!t&&l)return l(n,!0);if(u)return u(n,!0);if(f&&"string"==typeof n)return f(n);var p=new Error("Cannot find module '"+n+"'");throw p.code="MODULE_NOT_FOUND",p}o.resolve=c;var a=r[n]=new i.Module(n);e[n][0].call(a.exports,o,a,a.exports,this)}return r[n].exports}function o(e){this.id=e,this.bundle=i,this.exports={}}var u="function"==typeof parcelRequire&&parcelRequire,f="function"==typeof require&&require;i.isParcelRequire=!0,i.Module=o,i.modules=e,i.cache=r,i.parent=u;for(var c=0;c<n.length;c++)i(n[c]);if(n.length){var l=i(n[n.length-1]);"object"==typeof exports&&"undefined"!=typeof module?module.exports=l:"function"==typeof define&&define.amd?define(function(){return l}):t&&(this[t]=l)}return i}({1:[function(require,module,exports) {
-var e=require("axios");module.exports=function(s,t){if(s.log("Node.js HTTP trigger function processed a request. RequestUri=%s",t.originalUrl),t.body&&t.body.email){e.post({method:"post",url:"https://api.sendgrid.com/v3/contactdb/recipients",data:{email:t.body.email},headers:{"content-type":"application/json",authorization:"Bearer"+void 0}}).then(function(e){s.res={body:"Success: Added "+t.body.email+e.persisted_recipients[0]}}).catch(function(e){s.res={status:400,body:"Error: "+e}})}else s.res={status:400,body:"Please pass an email address in the request body"+s.res};s.done()};
-},{}]},{},[1], null)
-//# sourceMappingURL=/index.map
+var axios = require('axios');
+
+module.exports = function(context, req) {
+    context.log('Node.js HTTP trigger function processed a request. RequestUri=%s', req.originalUrl);
+
+    if (req.body && req.body.email) {
+
+        var API_KEY = process.env.SG_APIKEY;
+
+        axios.post({
+            method: 'post',
+            url: 'https://api.sendgrid.com/v3/contactdb/recipients',
+            data: {
+                email: req.body.email
+            },
+            headers:{
+                'content-type': 'application/json',
+                'authorization': 'Bearer' + API_KEY
+            }
+        })
+        .then(function (response) {
+            response.persisted_recipients.toString();
+            context.res = {
+                // status defaults to 200 */
+                body: "Success: Added " + req.body.email + response.persisted_recipients
+            };
+
+            return context.res;
+        })
+        .catch(function (error) {
+            error.errors.toString();
+            context.res = {
+                status: 400,
+                body: "Error: " + error.errors
+            };
+            return context.res;
+        });
+        return context.res;
+    }
+    else {
+        context.res.toString();
+        context.res = {
+            status: 400,
+            body: "Please pass an email address in the request body" + context.res
+        };
+    }
+    context.done();
+};
+
