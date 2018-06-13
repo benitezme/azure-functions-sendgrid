@@ -23,7 +23,7 @@ module.exports = function(context, req) {
                 body: "Success: Added " + req.body.email + ' - ' + recipients[0]
             };
 
-            return context.res;
+            return recipients[0];
         })
         .catch(function (error) {
             error.errors.toString();
@@ -31,9 +31,8 @@ module.exports = function(context, req) {
                 status: 400,
                 body: "Error: " + error.errors
             };
-            return context.res;
+            return error;
         });
-        return context.res;
     }
     else {
         context.res.toString();
