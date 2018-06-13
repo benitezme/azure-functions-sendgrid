@@ -19,16 +19,21 @@ module.exports = function(context, req) {
             }
         })
         .then(function (response) {
+            response.persisted_recipients.toString();
             context.res = {
                 // status defaults to 200 */
-                body: "Success: Added " + req.body.email + response.persisted_recipients[0]
+                body: "Success: Added " + req.body.email + response.persisted_recipients
             };
+
+            return context.res;
         })
         .catch(function (error) {
+            error.errors.toString();
             context.res = {
                 status: 400,
-                body: "Error: " + error
+                body: "Error: " + error.errors
             };
+            return context.res;
         });
     }
     else {
