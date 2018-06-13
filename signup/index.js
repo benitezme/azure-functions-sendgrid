@@ -9,7 +9,7 @@ module.exports = function(context, req) {
             "email": req.body.email
         }
         ]);
-        var API_KEY = GetEnvironmentVariable("SG_APIKEY");
+        var API_KEY = process.env.SG_APIKEY;
 
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
