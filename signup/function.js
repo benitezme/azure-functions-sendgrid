@@ -35,6 +35,7 @@ module.exports = function(context, req) {
             };
             return context.res;
         });
+        return context.res;
     }
     else {
         context.res = {
