@@ -22,11 +22,11 @@ module.exports = function(context, req) {
               }
             ],
             "from": {
-              "email": "feedback@advanvedalgso.net",
+              "email": "feedback@advancedalgos.net",
               "name": "Advanced Algos Team"
             },
             "reply_to": {
-              "email": "feedback@advanvedalgso.net",
+              "email": "feedback@advancedalgos.net",
               "name": "Advanced Algos Team"
             },
             "template_id": "46e31787-38e1-420e-9170-beaf34035670"
