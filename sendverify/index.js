@@ -32,7 +32,7 @@ module.exports = function(context, req) {
             "template_id": "46e31787-38e1-420e-9170-beaf34035670"
           });
 
-        var sendEmail = axios({
+        var sendVerify = axios({
             method: 'post',
             url: 'https://api.sendgrid.com/v3/mail/send',
             data: data,
@@ -54,7 +54,7 @@ module.exports = function(context, req) {
             };
             return error;
         });
-        return subscribe;
+        return sendVerify;
     }
     else {
         context.res = {
