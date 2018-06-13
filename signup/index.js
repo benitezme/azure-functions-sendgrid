@@ -18,11 +18,30 @@ module.exports = function(context, req) {
         })
         .then(function (response) {
             var recipients = response.data.persisted_recipients;
-            context.res = {
-                // status defaults to 200 */
-                body: "Success: Added " + req.body.email + ' - ' + recipients[0]
-            };
 
+            axios({
+                method: 'post',
+                url: 'https://api.sendgrid.com/v3/contactdb/lists/4068018/recipients/' + recipients[0],
+                headers:{
+                    'content-type': 'application/json',
+                    'authorization': 'Bearer ' + API_KEY
+                }
+            })
+            .then(function (response) {
+                context.res = {
+                    // status defaults to 200 */
+                    body: "Success: Added " + req.body.email + ' - ' + recipients[0] + 'to General List'
+                };
+            })
+            .catch(function (error) {
+                error.errors.toString();
+                context.res = {
+                    status: 400,
+                    body: "Error: " + error.errors
+                };
+                return error;
+            });
+        
             return recipients[0];
         })
         .catch(function (error) {
