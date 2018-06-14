@@ -45,7 +45,7 @@ module.exports = function(context, req) {
                 });
                 return addToList;
             } else{
-                throw response.data.errors[0].message
+                throw response.data.errors[0].message;
             }
             
         })
@@ -53,14 +53,14 @@ module.exports = function(context, req) {
             context.res = {
                 body: "Success: Added " + response.email + ' to General List \n'
             };
-            return;
+            return response.status;
         })
         .catch(function (error) {
             context.res = {
                 status: 400,
                 body: "Add Contact Error: " + error
             };
-            return error;
+            return error.status;
         });
         return subscribe;
     }
@@ -69,8 +69,9 @@ module.exports = function(context, req) {
             status: 400,
             body: "Please pass an email address in the request body" + context.res
         };
+        return;
     }
-    JSON.parse(JSON.stringify(context.res));
     context.done();
+    return;
 };
 
