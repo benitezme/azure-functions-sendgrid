@@ -29,7 +29,6 @@ module.exports = function(context, req) {
                     }
                 })
                 .then(function (response) {
-
                     if (response.status >= 200 && response.status < 300) {
                         return {"email": req.body.email,"recipientId": recipients[0]};
                     } else {
@@ -57,8 +56,8 @@ module.exports = function(context, req) {
         })
         .catch(function (error) {
             context.res = {
-                status: 400,
-                body: "Add Contact Error: " + error
+                status: error.status,
+                body: "Add Contact Error: " + error.response.data.errors[0].message
             };
             return error.status;
         });
