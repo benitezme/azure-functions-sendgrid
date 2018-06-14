@@ -42,15 +42,19 @@ module.exports = function(context, req) {
             }
         })
         .then(function (response) {
-            context.res = {
-                body: "Success: Added " + response.email + ' to General List \n'
-            };
-            return;
+            if (response.status >= 200 && response.status < 300) {
+                context.res = {
+                    body: "Email verification sent \n"
+                };
+                return;
+            } else {
+                throw response.data.errors[0].message;
+            }   
         })
         .catch(function (error) {
             context.res = {
                 status: 400,
-                body: "Add Contact Error: " + error
+                body: "Verification email send error: " + error
             };
             return error;
         });
@@ -65,4 +69,3 @@ module.exports = function(context, req) {
     JSON.parse(JSON.stringify(context.res));
     context.done();
 };
-

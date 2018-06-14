@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "signup": "parcel build ./signup/function.js -d ./signup -o index.js -t node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,11 +19,5 @@
   "homepage": "https://github.com/bearcanrun/azure-functions-sendgrid#readme",
   "dependencies": {
     "axios": "^0.18.0"
-  },
-  "peerDependencies": {
-    "parcel-bundler": "^1.8.1"
-  },
-  "browser": {
-    "request": "xhr"
   }
 }
