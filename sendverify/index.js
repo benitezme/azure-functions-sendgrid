@@ -46,7 +46,7 @@ module.exports = function(context, req) {
                 context.res = {
                     body: "Email verification sent \n"
                 };
-                return;
+                return response.status;
             } else {
                 throw response.data.errors[0].message;
             }   
