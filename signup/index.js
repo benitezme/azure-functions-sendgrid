@@ -109,7 +109,7 @@ module.exports = function(context, req) {
                 body: "Success: Added " + response.body.email + ' to General List \n',
                 headers
             };
-            return response.status;
+            return context;
         })
         .catch(function (error) {
             context.res = {
@@ -117,7 +117,7 @@ module.exports = function(context, req) {
                 body: "Add Contact Error: " + error.response.data.errors[0].message,
                 headers
             };
-            return error.status;
+            return context;
         });
         return subscribe;
     }
@@ -127,7 +127,7 @@ module.exports = function(context, req) {
             body: "Please pass an email address in the request body" + context.res,
             headers
         };
-        return;
+        return context;
     }
     context.done();
     return;
