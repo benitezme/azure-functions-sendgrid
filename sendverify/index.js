@@ -1,3 +1,4 @@
+var jwt = require('jsonwebtoken');
 var axios = require('axios');
 
 module.exports = function(context, req) {
@@ -6,6 +7,12 @@ module.exports = function(context, req) {
     if (req.body && req.body.email) {
 
         var API_KEY = process.env.SG_APIKEY;
+        var token = jwt.sign({ email:req.body.email }, API_KEY, { expiresIn: '1d' });
+        var link = 'https://aacorporatesitedevelop.azurewebsites.net/email-verification.shtml?token=';
+
+        if (req.body.dev){
+          link = 'http://localhost:4000/email-verification.shtml?token=';
+        }
 
         var data = JSON.stringify({
             "personalizations": [
@@ -15,9 +22,9 @@ module.exports = function(context, req) {
                     "email": req.body.email
                   }
                 ],
-                "subject": "VERIFY YOU INTEREST in Advanced Algos",
+                "subject": "VERIFY YOUR INTEREST in Advanced Algos",
                 "substitutions": {
-                  "-aaverifylink-": "https://aacorporatesitedevelop.azurewebsites.net/"
+                  "-aaverifylink-": link + token
                 }
               }
             ],
@@ -49,7 +56,7 @@ module.exports = function(context, req) {
                 return response.status;
             } else {
                 throw response.data.errors[0].message;
-            }   
+            }
         })
         .catch(function (error) {
             context.res = {

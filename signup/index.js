@@ -1,16 +1,41 @@
+var jwt = require('jsonwebtoken');
 var axios = require('axios');
 
 module.exports = function(context, req) {
     context.log('Node.js HTTP trigger function processed a request. RequestUri=%s', req.originalUrl);
 
-    if (req.body && req.body.email) {
+    if (req.body && req.body.token) {
 
         var API_KEY = process.env.SG_APIKEY;
+
+        var token;
+        try {
+            token = jwt.verify(req.body.token, API_KEY, {maxAge: '1d'});
+        } catch(err) {
+            if (err.name === "TokenExpiredError"){
+                context.res = {
+                    status: 400,
+                    body: "Error: Token Expired. Please resubmit email address."
+                };
+                context.done();
+                return;
+            } else {
+                context.res = {
+                    status: 400,
+                    body: "Error: " + err.message
+                };
+                context.done();
+                return;
+            }
+        }
+        
+        context.log(token.email);
+        var email = token.email;
 
         var subscribe = axios({
             method: 'post',
             url: 'https://api.sendgrid.com/v3/contactdb/recipients',
-            data: [{"email":req.body.email}],
+            data: [{"email":email}],
             headers:{
                 'content-type': 'application/json',
                 'authorization': 'Bearer ' + API_KEY
@@ -30,7 +55,7 @@ module.exports = function(context, req) {
                 })
                 .then(function (response) {
                     if (response.status >= 200 && response.status < 300) {
-                        return {"email": req.body.email,"recipientId": recipients[0]};
+                        return {"email": email,"recipientId": recipients[0]};
                     } else {
                         throw response.data.errors[0].message;
                     }
@@ -44,7 +69,7 @@ module.exports = function(context, req) {
                 });
                 return addToList;
             } else{
-                throw response.data.errors[0].message;
+                return response.data.errors[0].message;
             }
             
         })
