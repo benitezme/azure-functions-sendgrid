@@ -104,11 +104,12 @@ module.exports = function(context, req) {
 
         })
         .then(function (response) {
-            // context.log("success: ", response)
             context.res = {
+                status: response.status,
                 body: "Success: Added " + response.body.email + ' to General List \n',
                 headers
             };
+            context.log("success: ", context)
             return context;
         })
         .catch(function (error) {
@@ -129,6 +130,7 @@ module.exports = function(context, req) {
         };
         return context;
     }
+    context = JSON.stringify(context);
     context.done();
     return;
 };
