@@ -4,11 +4,24 @@ var axios = require('axios');
 module.exports = function(context, req) {
     context.log('Node.js HTTP trigger function processed a request. RequestUri=%s', req.originalUrl);
 
-    if (req.body && req.body.token) {
+    context.log(req);
+    var token = '';
+    var dev = false;
+
+    if(req.method === 'GET'){
+      token = req.params.token;
+      dev = req.params.dev;
+    }
+    if(req.method === 'POST'){
+      token = req.body.token;
+      dev = req.body.dev;
+    }
+
+    if (token != '') {
 
         var API_KEY = process.env.SG_APIKEY;
         var origin = 'https://aacorporatesitedevelop.azurewebsites.net';
-        if (req.body.dev){
+        if (dev){
           origin = 'http://localhost:4000';
         }
         var headers = {
@@ -19,7 +32,7 @@ module.exports = function(context, req) {
 
         var token;
         try {
-            token = jwt.verify(req.body.token, API_KEY, {maxAge: '1d'});
+            token = jwt.verify(token, API_KEY, {maxAge: '1d'});
         } catch(err) {
             if (err.name === "TokenExpiredError"){
                 context.res = {

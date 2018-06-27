@@ -4,13 +4,26 @@ var axios = require('axios');
 module.exports = function(context, req) {
     context.log('Node.js HTTP trigger function processed a request. RequestUri=%s', req.originalUrl);
 
-    if (req.body && req.body.email) {
+    context.log(req);
+    var email = '';
+    var dev = false;
+
+    if(req.method === 'GET'){
+      email = req.params.email;
+      dev = req.params.dev;
+    }
+    if(req.method === 'POST'){
+      email = req.body.email;
+      dev = req.body.dev;
+    }
+
+    if (email != '') {
 
         var API_KEY = process.env.SG_APIKEY;
-        var token = jwt.sign({ email:req.body.email }, API_KEY, { expiresIn: '1d' });
+        var token = jwt.sign({ email:email }, API_KEY, { expiresIn: '1d' });
         var origin = 'https://aacorporatesitedevelop.azurewebsites.net';
         var params = '/email-verification.shtml?token=';
-        if (req.body.dev){
+        if (dev){
           origin = 'http://localhost:4000';
         }
 
@@ -25,7 +38,7 @@ module.exports = function(context, req) {
               {
                 "to": [
                   {
-                    "email": req.body.email
+                    "email": email
                   }
                 ],
                 "subject": "VERIFY YOUR INTEREST in Advanced Algos",
