@@ -7,6 +7,15 @@ module.exports = function(context, req) {
     if (req.body && req.body.token) {
 
         var API_KEY = process.env.SG_APIKEY;
+        var origin = 'https://aacorporatesitedevelop.azurewebsites.net';
+        if (req.body.dev){
+          origin = 'http://localhost:4000';
+        }
+        var headers = {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin' : origin,
+          'Access-Control-Allow-Credentials': 'true'
+        };
 
         var token;
         try {
@@ -15,20 +24,22 @@ module.exports = function(context, req) {
             if (err.name === "TokenExpiredError"){
                 context.res = {
                     status: 400,
-                    body: "Error: Token Expired. Please resubmit email address."
+                    body: "Error: Token Expired. Please resubmit email address.",
+                    headers
                 };
                 context.done();
                 return;
             } else {
                 context.res = {
                     status: 400,
-                    body: "Error: " + err.message
+                    body: "Error: " + err.message,
+                    headers
                 };
                 context.done();
                 return;
             }
         }
-        
+
         context.log(token.email);
         var email = token.email;
 
@@ -55,7 +66,12 @@ module.exports = function(context, req) {
                 })
                 .then(function (response) {
                     if (response.status >= 200 && response.status < 300) {
-                        return {"email": email,"recipientId": recipients[0]};
+                      context.res = {
+                          status: response.status,
+                          body: {"email": email,"recipientId": recipients[0]},
+                          headers
+                      };
+                      return context.res;
                     } else {
                         throw response.data.errors[0].message;
                     }
@@ -63,7 +79,8 @@ module.exports = function(context, req) {
                 .catch(function (error) {
                     context.res = {
                         status: 400,
-                        body: "Add to List Error: " + error
+                        body: "Add to List Error: " + error,
+                        headers
                     };
                     return error;
                 });
@@ -71,18 +88,21 @@ module.exports = function(context, req) {
             } else{
                 return response.data.errors[0].message;
             }
-            
+
         })
         .then(function (response) {
+            // context.log("success: ", response)
             context.res = {
-                body: "Success: Added " + response.email + ' to General List \n'
+                body: "Success: Added " + response.body.email + ' to General List \n',
+                headers
             };
             return response.status;
         })
         .catch(function (error) {
             context.res = {
                 status: error.status,
-                body: "Add Contact Error: " + error.response.data.errors[0].message
+                body: "Add Contact Error: " + error.response.data.errors[0].message,
+                headers
             };
             return error.status;
         });
@@ -91,11 +111,11 @@ module.exports = function(context, req) {
     else {
         context.res = {
             status: 400,
-            body: "Please pass an email address in the request body" + context.res
+            body: "Please pass an email address in the request body" + context.res,
+            headers
         };
         return;
     }
     context.done();
     return;
 };
-

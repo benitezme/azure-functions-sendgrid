@@ -8,11 +8,17 @@ module.exports = function(context, req) {
 
         var API_KEY = process.env.SG_APIKEY;
         var token = jwt.sign({ email:req.body.email }, API_KEY, { expiresIn: '1d' });
-        var link = 'https://aacorporatesitedevelop.azurewebsites.net/email-verification.shtml?token=';
-
+        var origin = 'https://aacorporatesitedevelop.azurewebsites.net';
+        var params = '/email-verification.shtml?token=';
         if (req.body.dev){
-          link = 'http://localhost:4000/email-verification.shtml?token=';
+          origin = 'http://localhost:4000';
         }
+
+        var headers = {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin' : origin,
+          'Access-Control-Allow-Credentials': 'true'
+        };
 
         var data = JSON.stringify({
             "personalizations": [
@@ -24,7 +30,7 @@ module.exports = function(context, req) {
                 ],
                 "subject": "VERIFY YOUR INTEREST in Advanced Algos",
                 "substitutions": {
-                  "-aaverifylink-": link + token
+                  "-aaverifylink-": origin + params + token
                 }
               }
             ],
@@ -51,7 +57,8 @@ module.exports = function(context, req) {
         .then(function (response) {
             if (response.status >= 200 && response.status < 300) {
                 context.res = {
-                    body: "Email verification sent \n"
+                    body: "Email verification sent \n",
+                    headers
                 };
                 return response.status;
             } else {
@@ -61,7 +68,8 @@ module.exports = function(context, req) {
         .catch(function (error) {
             context.res = {
                 status: 400,
-                body: "Verification email send error: " + error.response.data.errors[0].message
+                body: "Verification email send error: " + error.response.data.errors[0].message,
+                headers
             };
             return error.status;
         });
@@ -70,7 +78,8 @@ module.exports = function(context, req) {
     else {
         context.res = {
             status: 400,
-            body: "Please pass an email address in the request body" + context.res
+            body: "Please pass an email address in the request body" + context.res,
+            headers
         };
     }
     context.done();
