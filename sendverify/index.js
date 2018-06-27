@@ -96,7 +96,5 @@ module.exports = function(context, req) {
             headers
         };
     }
-    context = JSON.stringify(context);
     context.done();
-    return;
 };

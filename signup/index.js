@@ -130,7 +130,6 @@ module.exports = function(context, req) {
         };
         return context;
     }
-    context = JSON.stringify(context);
     context.done();
     return;
 };
