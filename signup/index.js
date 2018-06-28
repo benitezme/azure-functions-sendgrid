@@ -20,6 +20,7 @@ module.exports = function(context, req) {
     if (token != '') {
 
         var API_KEY = process.env.SG_APIKEY;
+        var API_KEY2 = process.env.SG_APIKEY2;
         var origin = 'https://aacorporatesitedevelop.azurewebsites.net';
         if (dev){
           origin = 'http://localhost:4000';
@@ -32,7 +33,7 @@ module.exports = function(context, req) {
 
         var token;
         try {
-            token = jwt.verify(token, API_KEY, {maxAge: '1d'});
+            token = jwt.verify(token, API_KEY2, {maxAge: '1d'});
         } catch(err) {
             if (err.name === "TokenExpiredError"){
                 context.res = {
