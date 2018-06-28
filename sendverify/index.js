@@ -55,7 +55,7 @@ module.exports = function(context, req) {
               "email": "feedback@advancedalgos.net",
               "name": "Advanced Algos Team"
             },
-            "template_id": "46e31787-38e1-420e-9170-beaf34035670"
+            "template_id": process.env.TEMPL_ID
           });
 
         var sendVerify = axios({
