@@ -19,7 +19,7 @@ module.exports = function(context, req) {
 
     if (email != '') {
 
-        var API_KEY = process.env.SG_APIKEY;
+        var API_KEY = process.env.SG_APIKEY2;
         var token = jwt.sign({ email:email }, API_KEY, { expiresIn: '1d' });
         var origin = 'https://aacorporatesitedevelop.azurewebsites.net';
         var params = '/email-verification.shtml?token=';
