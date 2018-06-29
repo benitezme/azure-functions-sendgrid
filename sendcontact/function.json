@@ -1,0 +1,19 @@
+{
+    "disabled": false,
+    "scriptFile": "index.js",
+    "bindings": [
+        {
+            "authLevel": "anonymous",
+            "type": "httpTrigger",
+            "direction": "in",
+            "name": "req",
+            "methods": ["get","post"],
+            "route": "signup/{token}/{*dev}"
+        },
+        {
+            "type": "http",
+            "direction": "out",
+            "name": "res"
+        }
+    ]
+}
