@@ -21,7 +21,7 @@ module.exports = function(context, req) {
 
         var API_KEY = process.env.SG_APIKEY;
         var API_KEY2 = process.env.SG_APIKEY2;
-        var origin = 'https://aacorporatesitedevelop.azurewebsites.net';
+        var origin = 'https://advancedalgos.net';
         if (dev){
           origin = 'http://localhost:4000';
         }

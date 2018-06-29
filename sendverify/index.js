@@ -21,7 +21,7 @@ module.exports = function(context, req) {
 
         var API_KEY = process.env.SG_APIKEY2;
         var token = jwt.sign({ email:email }, API_KEY, { expiresIn: '1d' });
-        var origin = 'https://aacorporatesitedevelop.azurewebsites.net';
+        var origin = 'https://advancedalgos.net';
         var params = '/email-verification.shtml?token=';
         if (dev){
           origin = 'http://localhost:4000';
