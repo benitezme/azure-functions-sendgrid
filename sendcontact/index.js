@@ -70,7 +70,7 @@ module.exports = function(context, req) {
               async: false,
               method: 'post',
               url: 'https://www.google.com/recaptcha/api/siteverify',
-              data: {'secret': process.env.RECAPTCHA, 'response': },
+              data: {'secret': process.env.RECAPTCHA, 'response': recaptcha},
               headers:{
                   'content-type': 'application/json',
                   'authorization': 'Bearer ' + API_KEY
