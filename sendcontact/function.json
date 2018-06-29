@@ -8,7 +8,7 @@
             "direction": "in",
             "name": "req",
             "methods": ["get","post"],
-            "route": "signup/{token}/{*dev}"
+            "route": "sendcontact/{email}/{name}/{message}/{*dev}"
         },
         {
             "type": "http",

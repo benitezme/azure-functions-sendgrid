@@ -14,11 +14,13 @@ module.exports = function(context, req) {
       name = req.params.name;
       email = req.params.email;
       message = req.params.message;
+      dev = req.params.dev;
     }
     if(req.method === 'POST'){
       name = req.body.name;
       email = req.body.email;
       message = req.body.message;
+      dev = req.body.dev;
     }
 
     if (email != '') {
@@ -31,12 +33,14 @@ module.exports = function(context, req) {
           'Access-Control-Allow-Credentials': 'true'
         };
 
+        var toEmail = (!dev) ? 'feedback@advancedalgos.net' : 'bearcanrun@gmail.com';
+
         var data = JSON.stringify({
             "personalizations": [
               {
                 "to": [
                   {
-                    "email": "feedback@advancedalgos.net",
+                    "email": toEmail,
                     "name": "Advanced Algos Team"
                   }
                 ],
@@ -51,8 +55,8 @@ module.exports = function(context, req) {
               "name": name
             },
             "reply_to": {
-              "email": "feedback@advancedalgos.net",
-              "name": "Advanced Algos Team"
+              "email": email
+              "name": name
             },
             "template_id": process.env.TEMPL_ID
           });
