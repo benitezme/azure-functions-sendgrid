@@ -12,10 +12,10 @@ module.exports = function(context, req) {
     var dev = false;
 
     if(req.method === 'GET'){
-      name = req.params.name;
-      email = req.params.email;
-      message = req.params.message;
-      recaptcha = req.params.recaptcha;
+      name = decodeURI(req.params.name);
+      email = decodeURI(req.params.email);
+      message = decodeURI(req.params.message);
+      recaptcha = decodeURI(req.params.recaptcha);
       dev = req.params.dev;
     }
     if(req.method === 'POST'){
