@@ -91,7 +91,7 @@ module.exports = function(context, req) {
                         data: data,
                         headers:{
                             'content-type': 'application/json',
-                            'authorization': 'Bearer 1' + API_KEY
+                            'authorization': 'Bearer ' + API_KEY
                         }
                     })
                     .then(function (response) {
