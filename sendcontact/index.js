@@ -43,7 +43,7 @@ module.exports = function(context, req) {
           'Access-Control-Allow-Credentials': 'true'
         };
 
-        var toEmail = (!dev) ? 'feedback@advancedalgos.net' : 'bearcanrun@gmail.com';
+        var toEmail = 'feedback@advancedalgos.net';
 
         var data = JSON.stringify({
             "personalizations": [
