@@ -85,7 +85,7 @@ module.exports = function(context, req) {
                 context.log('recaptcha response: ', response.data, response.data.success);
                 if (response.status >= 200 && response.status < 300 && response.data.success) {
                     context.log('presend SendGrid');
-                    var sendVerify = axios({
+                    return axios({
                         method: 'post',
                         url: 'https://api.sendgrid.com/v3/mail/send',
                         data: data,
@@ -96,18 +96,19 @@ module.exports = function(context, req) {
                     })
                     .then(function (response) {
                         context.log('sendgrid response: ', response)
-                        if (response.status >= 200 && response.status < 300 && response.data.success) {
+                        if (response.status >= 200 && response.status < 300) {
                             context.res = {
                                 status: response.status,
-                                body: "Contact email sent \n",
+                                body: "Contact email sent",
                                 headers
                             };
-                            return context;
                         } else {
                             throw response.data.errors[0].message;
                         }
+                        return context.res;
                     })
                     .catch(function (error) {
+                        context.log('sendgrid Error: ', error);
                         context.res = {
                             status: 400,
                             body: "Contact email send error: " + error.response.data.errors[0].message,
@@ -115,7 +116,6 @@ module.exports = function(context, req) {
                         };
                         throw error.status;
                     });
-                return sendVerify;
               }else{
                   context.log('error recaptcha: ', response.data);
                   context.res ={
@@ -124,8 +124,10 @@ module.exports = function(context, req) {
                   };
                   throw context.res;
               }
-              context.log('context end: ', checkCaptcha, context.res);
-              context.done();
+          })
+          .then(function(response){
+              context.log('context done: ', response);
+              return context.done();
           })
           .catch(function (error) {
               context.log('function error: ', error, JSON.stringify(error.Error));
@@ -135,7 +137,8 @@ module.exports = function(context, req) {
                   headers
               };
               context.log('context error: ', checkCaptcha, context.res);
-              context.done();
+              return context.res;
           });
       }
+      return;
 };
