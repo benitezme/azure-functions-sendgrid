@@ -84,53 +84,58 @@ module.exports = function(context, req) {
           .then(function (response) {
                 context.log('recaptcha response: ', response.data, response.data.success);
                 if (response.status >= 200 && response.status < 300 && response.data.success) {
+                    context.log('presend SendGrid');
                     var sendVerify = axios({
-                    method: 'post',
-                    url: 'https://api.sendgrid.com/v3/mail/send',
-                    data: data,
-                    headers:{
-                        'content-type': 'application/json',
-                        'authorization': 'Bearer 1' + API_KEY
-                    }
-                })
-                .then(function (response) {
-                    context.log('sendgrid response: ', response)
-                    if (response.status >= 200 && response.status < 300 && response.data.success) {
+                        method: 'post',
+                        url: 'https://api.sendgrid.com/v3/mail/send',
+                        data: data,
+                        headers:{
+                            'content-type': 'application/json',
+                            'authorization': 'Bearer 1' + API_KEY
+                        }
+                    })
+                    .then(function (response) {
+                        context.log('sendgrid response: ', response)
+                        if (response.status >= 200 && response.status < 300 && response.data.success) {
+                            context.res = {
+                                status: response.status,
+                                body: "Contact email sent \n",
+                                headers
+                            };
+                            return context;
+                        } else {
+                            throw response.data.errors[0].message;
+                        }
+                    })
+                    .catch(function (error) {
                         context.res = {
-                            status: response.status,
-                            body: "Contact email sent \n",
+                            status: 400,
+                            body: "Contact email send error: " + error.response.data.errors[0].message,
                             headers
                         };
-                        return context;
-                    } else {
-                        throw response.data.errors[0].message;
-                    }
-                })
-                .catch(function (error) {
-                    context.res = {
-                        status: 400,
-                        body: "Contact email send error: " + error.response.data.errors[0].message,
-                        headers
-                    };
-                    return error.status;
-                });
+                        throw error.status;
+                    });
                 return sendVerify;
               }else{
-                  throw new Error({
+                  context.log('error recaptcha: ', response.data);
+                  context.res ={
                       status: 400,
-                      response: response.message
-                  });
+                      response: response.data
+                  };
+                  throw context.res;
               }
+              context.log('context end: ', checkCaptcha, context.res);
+              context.done();
           })
           .catch(function (error) {
+              context.log('function error: ', error, JSON.stringify(error.Error));
               context.res = {
                   status: 400,
-                  body: "reCaptcha error: " + error.response.data.errors[0].message,
+                  body: "contact error: " + JSON.stringify(error.response),
                   headers
               };
+              context.log('context error: ', checkCaptcha, context.res);
               context.done();
-              return false;
           });
       }
-    context.done();
 };
