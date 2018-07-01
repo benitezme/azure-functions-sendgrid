@@ -83,7 +83,7 @@ module.exports = function(context, req) {
           })
           .then(function (response) {
                 context.log('recaptcha response: ', response.data, response.data.success);
-                if (response.status >= 200 && response.status < 300) {
+                if (response.status >= 200 && response.status < 300 && response.data.success) {
                     var sendVerify = axios({
                     method: 'post',
                     url: 'https://api.sendgrid.com/v3/mail/send',
